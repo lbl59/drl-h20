@@ -1,6 +1,6 @@
 ### A reservoir control environment to use with Gymnasium RL
-from gym import Env
-from gym.spaces import Dict, Discrete, Box
+from gymnasium import Env
+from gymnasium.spaces import Dict, Discrete, Box
 import numpy as np
 from random import gauss, uniform
 from math import pi, sin
