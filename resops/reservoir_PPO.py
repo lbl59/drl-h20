@@ -5,7 +5,7 @@ from reservoir_env import Reservoir_continuous, plot_continuous, Reservoir_discr
 from stable_baselines3 import PPO
 from stable_baselines3.ppo.policies import MultiInputPolicy
 
-mpl.use('tkAgg')
+# mpl.use('tkAgg')
 
 #############################################################################
 ### Train PPO continuous policy for reservoir operations
