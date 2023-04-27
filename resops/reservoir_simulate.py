@@ -18,7 +18,7 @@ reservoir = Reservoir_continuous()
 obs = reservoir.reset()
 
 ### lists for storing state variables, actions, & rewards
-storages, targets, inflows, releases, rewards = [obs['storage']], [obs['target']], [], [], []
+storages, targets, inflows, releases, rewards = [obs['storage'][0]], [obs['target'][0]], [], [], []
 
 ### loop through daily simulation until the reservoir environment terminates after set number of time steps
 terminated = False
@@ -28,14 +28,14 @@ while not terminated:
     ### update state of reservoir with release & get reward
     obs, reward, terminated, info = reservoir.step(release)
     ### save state variables, actions, & rewards for plotting
-    storages.append(obs['storage'])
-    targets.append(obs['target'])
+    storages.append(obs['storage'][0])
+    targets.append(obs['target'][0])
     inflows.append(info['inflow'])
     releases.append(info['release'])
     rewards.append(reward)
 
 ### plot reservoir storage, target, inflow, release, & reward time series
-plot_continuous(reservoir, storages, targets, inflows, releases, rewards)
+plot_continuous(reservoir, storages, targets, inflows, releases, rewards, 'figs/constant_continuous.png')
 
 reservoir.close()
 
@@ -54,7 +54,7 @@ reservoir = Reservoir_continuous()
 obs = reservoir.reset()
 
 ### lists for storing state variables, actions, & rewards
-storages, targets, inflows, releases, rewards = [obs['storage']], [obs['target']], [], [], []
+storages, targets, inflows, releases, rewards = [obs['storage'][0]], [obs['target'][0]], [], [], []
 
 ### loop through daily simulation until the reservoir environment terminates after set number of time steps
 terminated = False
@@ -64,14 +64,14 @@ while not terminated:
     ### update state of reservoir with release & get reward
     obs, reward, terminated, info = reservoir.step(release)
     ### save state variables, actions, & rewards for plotting
-    storages.append(obs['storage'])
-    targets.append(obs['target'])
+    storages.append(obs['storage'][0])
+    targets.append(obs['target'][0])
     inflows.append(info['inflow'])
     releases.append(info['release'])
     rewards.append(reward)
 
 ### plot reservoir storage, target, inflow, release, & reward time series
-plot_continuous(reservoir, storages, targets, inflows, releases, rewards)
+plot_continuous(reservoir, storages, targets, inflows, releases, rewards, 'figs/random_continuous.png')
 
 reservoir.close()
 
@@ -90,7 +90,8 @@ reservoir = Reservoir_discrete()
 obs = reservoir.reset()
 
 ### lists for storing state variables, actions, & rewards
-storages_discrete, targets_discrete, storages_cont, targets_cont, inflows, releases, rewards = [obs['storage_discrete']], [obs['storage_discrete']], [], [], [], [], []
+storages_discrete, targets_discrete, storages_cont, targets_cont, inflows, releases, rewards = \
+    [obs['storage_discrete'][0]], [obs['storage_discrete'][0]], [], [], [], [], []
 
 ### loop through daily simulation until the reservoir environment terminates after set number of time steps
 terminated = False
@@ -100,8 +101,8 @@ while not terminated:
     ### update state of reservoir with release & get reward
     obs, reward, terminated, info = reservoir.step(release_discrete)
     ### save state variables, actions, & rewards for plotting
-    storages_discrete.append(obs['storage_discrete'])
-    targets_discrete.append(obs['target_discrete'])
+    storages_discrete.append(obs['storage_discrete'][0])
+    targets_discrete.append(obs['target_discrete'][0])
     storages_cont.append(info['storage_cont'])
     targets_cont.append(info['target_cont'])
     inflows.append(info['inflow'])
@@ -109,7 +110,7 @@ while not terminated:
     rewards.append(reward)
 
 ### plot reservoir storage, target, inflow, release, & reward time series
-plot_discrete(reservoir, storages_cont, targets_cont, storages_discrete, targets_discrete, inflows, releases, rewards)
+plot_discrete(reservoir, storages_cont, targets_cont, storages_discrete, targets_discrete, inflows, releases, rewards, 'figs/constant_discrete.png')
 
 reservoir.close()
 
@@ -146,6 +147,6 @@ while not terminated:
     rewards.append(reward)
 
 ### plot reservoir storage, target, inflow, release, & reward time series
-plot_discrete(reservoir, storages_cont, targets_cont, storages_discrete, targets_discrete, inflows, releases, rewards)
+plot_discrete(reservoir, storages_cont, targets_cont, storages_discrete, targets_discrete, inflows, releases, rewards, 'figs/random_discrete.png')
 
 reservoir.close()

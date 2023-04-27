@@ -1,4 +1,7 @@
 ### A reservoir control environment to use with Gymnasium RL
+import sys
+import gymnasium
+sys.modules["gym"] = gymnasium
 from gymnasium import Env
 from gymnasium.spaces import Dict, Discrete, Box
 import numpy as np
@@ -26,14 +29,14 @@ class Reservoir_base(Env):
 
         ### inflow parameters
         self.inflow_base = 1
-        self.use_inflow_sin = False
-        self.inflow_sin_amp = 0.02
-        self.inflow_sin2_amp = 0.01
-        self.use_inflow_rand_walk = False
-        self.inflow_rand_walk_sd = 0.0005
-        self.use_inflow_jump = False
+        self.use_inflow_sin = True
+        self.inflow_sin_amp = 0.2
+        self.inflow_sin2_amp = 0.1
+        self.use_inflow_rand_walk = True
+        self.inflow_rand_walk_sd = 0.005
+        self.use_inflow_jump = True
         self.inflow_jump_prob = 0.01
-        self.inflow_jump_amp = 0.02
+        self.inflow_jump_amp = 0.2
 
         ### reservoir parameters
         self.max_release = 3
@@ -164,7 +167,7 @@ class Reservoir_continuous(Reservoir_base):
         '''
 
         self.reset_basic()
-        return {'storage': self.storage, 'target': self.target}
+        return {'storage': np.array([self.storage]), 'target': np.array([self.target])}
 
 
     def step(self, release_target):
@@ -201,7 +204,8 @@ class Reservoir_continuous(Reservoir_base):
         ### update time and terminate episode when time is over
         self.update_time()
 
-        return {'storage': self.storage, 'target': self.target}, self.reward, self.terminate, {'inflow':self.inflow, 'release':self.release}
+        return {'storage': np.array([self.storage]), 'target': np.array([self.target])}, self.reward, self.terminate, \
+               {'inflow':self.inflow, 'release':self.release}
 
 
 
@@ -244,7 +248,7 @@ class Reservoir_discrete(Reservoir_base):
         storage_discrete = np.argmin(np.abs(self.grid_storage - self.storage))
         target_discrete = np.argmin(np.abs(self.grid_storage - self.target))
 
-        return {'storage_discrete':storage_discrete, 'target_discrete':target_discrete}
+        return {'storage_discrete':np.array([storage_discrete]), 'target_discrete':np.array([target_discrete])}
 
 
     def step(self, release_discrete):
@@ -287,14 +291,14 @@ class Reservoir_discrete(Reservoir_base):
         ### update time and truncate episode when time is over
         self.update_time()
 
-        return {'storage_discrete':storage_discrete, 'target_discrete':target_discrete}, self.reward, self.terminate, \
+        return {'storage_discrete':np.array([storage_discrete]), 'target_discrete':np.array([target_discrete])}, self.reward, self.terminate, \
                 {'inflow': self.inflow, 'release': self.release,'storage_cont': self.storage, 'target_cont':self.target}
 
 
 
 
 
-def plot_continuous(reservoir, storages, targets, inflows, releases, rewards):
+def plot_continuous(reservoir, storages, targets, inflows, releases, rewards, figname):
     ny = reservoir.ny
     dt = reservoir.dt
     ### plot results
@@ -319,11 +323,12 @@ def plot_continuous(reservoir, storages, targets, inflows, releases, rewards):
     axs[2].set_xticks(np.arange(ny + 1), [''] * (ny + 1))
     axs[2].legend()
     axs[2].set_ylabel('Rewards')
-    plt.show()
+    # plt.show()
+
+    plt.savefig(figname, bbox_inches='tight', dpi=300)
 
 
-
-def plot_discrete(reservoir, storages_cont, targets_cont, storages_discrete, targets_discrete, inflows, releases, rewards):
+def plot_discrete(reservoir, storages_cont, targets_cont, storages_discrete, targets_discrete, inflows, releases, rewards, figname):
     ny = reservoir.ny
     dt = reservoir.dt
     ### plot results
@@ -355,4 +360,6 @@ def plot_discrete(reservoir, storages_cont, targets_cont, storages_discrete, tar
     axs[3].set_xticks(np.arange(ny+1), ['']*(ny+1))
     axs[3].legend()
     axs[3].set_ylabel('Rewards')
-    plt.show()
+    # plt.show()
+
+    plt.savefig(figname, bbox_inches='tight', dpi=300)
